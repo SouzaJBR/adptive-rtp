@@ -7,5 +7,5 @@ import uk.co.caprica.vlcj.discovery.NativeDiscovery;
 import javax.swing.*;
 
 public class Main {
-    
+
 }

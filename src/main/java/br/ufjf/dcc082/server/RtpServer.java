@@ -55,8 +55,8 @@ public class RtpServer {
 
     private static final String eiMrl = "http://l3-ei-ee-cdn-mdstrm.secure.footprint.net/live-stream-secure/5801255b39c38e1109ddfabd/publish/media_2500.m3u8?access_token=bQ1zfiiuLiobsN52xpUUH3Ofw5AgW1xCI9gChlXeupubwqBCrOgpQZW3CzUleK1jqbH6YVrjgaH&es=l3-ei-ee-cdn-mdstrm.secure.footprint.net&proto=http";
 
-    private String serverAddress = "";
-    private int serverPort = 0;
+    private String serverAddress = "239.0.0.1";
+    private int serverPort = 5004;
     private String mediaUrl = eiMrl;
 
     public static void main(final String[] args) {
@@ -64,7 +64,7 @@ public class RtpServer {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new Main();
+                new RtpServer();
             }
         });
     }

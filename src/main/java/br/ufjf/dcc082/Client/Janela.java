@@ -31,8 +31,6 @@ public class Janela extends JFrame {
         pnlNome.add(lblNome, BorderLayout.WEST);//Adiciona o label a esquerda
         pnlNome.add(txtURL,BorderLayout.CENTER);
 
-
-
         JPanel pnlcb = new JPanel();
         pnlcb.setLayout(new BorderLayout(50,5));
 

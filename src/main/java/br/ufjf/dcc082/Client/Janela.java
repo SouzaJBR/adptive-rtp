@@ -17,10 +17,30 @@ public class Janela extends JFrame {
 
     private final JTextField txtURL = new JTextField(10);
     private final JButton btnPlay = new JButton("Play");
+    private final JButton btnIr = new JButton("Ir");
 
-    private final JButton btnPause = new JButton("Pause");
+    //private final JButton btnPause = new JButton("Pause");
     private final JComboBox cb = new JComboBox();
 
+    public JTextField getTxtURL() {
+        return txtURL;
+    }
+
+    public JButton getBtnPlay() {
+        return btnPlay;
+    }
+
+    public JButton getBtnIr() {
+        return btnIr;
+    }
+
+ //   public JButton getBtnPause() {
+   //     return btnPause;
+ //   }
+
+    public JComboBox getCb() {
+        return cb;
+    }
 
     public Janela() throws HeadlessException {
 
@@ -32,19 +52,20 @@ public class Janela extends JFrame {
         pnlNome.add(txtURL,BorderLayout.CENTER);
 
 
-
+        pnlNome.add(btnIr,BorderLayout.EAST);
         JPanel pnlcb = new JPanel();
         pnlcb.setLayout(new BorderLayout(50,5));
 
+
         pnlcb.add(btnPlay,BorderLayout.WEST);
-        pnlcb.add(btnPause,BorderLayout.CENTER);
+       // pnlcb.add(btnPause,BorderLayout.CENTER);
         pnlcb.add(cb,BorderLayout.EAST);
 
         JPanel pnlEntrada = new JPanel(new FlowLayout());
         pnlEntrada.add(pnlNome);
         pnlEntrada.add(pnlcb);
         btnPlay.setPreferredSize(new Dimension(400, 30));
-        btnPause.setPreferredSize(new Dimension(400, 30));
+      //  btnPause.setPreferredSize(new Dimension(400, 30));
         add(pnlNome,BorderLayout.NORTH);
         add(pnlEntrada,BorderLayout.SOUTH);
 

@@ -45,6 +45,15 @@ public class RtpServer {
         sb.append(serverPort+10);
         sb.append(",mux=ts}\"");
 
+
+        sb.append(",");
+
+        sb.append("dst=\"rtp{dst=");
+        sb.append(serverAddress);
+        sb.append(",port=");
+        sb.append(serverPort+20);
+        sb.append(",mux=ts}\"");
+
         sb.append("}");
         return sb.toString();
     }
@@ -77,5 +86,6 @@ public class RtpServer {
         frame.setContentPane(mediaPlayerComponent);
         frame.setVisible(true);
         mediaPlayerComponent.getMediaPlayer().playMedia(mediaUrl, RtpServer.formatRtpStream(serverAddress, serverPort));
+
     }
 }

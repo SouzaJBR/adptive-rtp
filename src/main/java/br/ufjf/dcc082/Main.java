@@ -69,12 +69,19 @@ public class Main {
             public void actionPerformed(ActionEvent actionEvent) {
                 if(frame.getBtnPlay().getText() == "Play"){
                     frame.getBtnPlay().setText("Pause");
+                    if(mediaPlayerComponent.getMediaPlayer().isPlaying()){
+                        mediaPlayerComponent.getMediaPlayer().play();
+                    }
+                    else
+                        mediaPlayerComponent.getMediaPlayer().start();
 
                 }
                 else if(frame.getBtnPlay().getText() == "Pause"){
                     frame.getBtnPlay().setText("Play");
+                    mediaPlayerComponent.getMediaPlayer().pause();
 
                 }
+
             }
         });
 
@@ -84,6 +91,22 @@ public class Main {
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                 mediaPlayerComponent.release(true);
                 System.exit(0);
+            }
+        });
+
+        frame.getBtnIr().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                frame.getTxtURL().getText();
+               // ...
+            }
+        });
+
+        frame.getBtnParar().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                mediaPlayerComponent.getMediaPlayer().stop();
+                frame.getBtnPlay().setText("Play");
             }
         });
 

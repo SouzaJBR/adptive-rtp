@@ -5,6 +5,7 @@ import br.ufjf.dcc082.Client.ErrorLoggerDetect;
 import br.ufjf.dcc082.Client.Janela;
 import br.ufjf.dcc082.server.RtpServer;
 import uk.co.caprica.vlcj.binding.LibVlcFactory;
+
 import uk.co.caprica.vlcj.binding.internal.libvlc_log_level_e;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.discovery.NativeDiscovery;
@@ -52,7 +53,7 @@ public class Main {
         errorCounter = new ErrorCounter(3, 20, 2, 1);
 
         frame.setBounds(100, 100, 1280, 720);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
 
         final int STREAM_CHECK_INTERVAL = 30_000;
@@ -80,6 +81,7 @@ public class Main {
 
         Logger.setLogger(mediaPlayerComponent.getMediaPlayerFactory().newLog());
         if (Logger.getLogger() == null) {
+
             System.out.println("Native log not available on this platform");
             System.exit(1);
         }
@@ -92,6 +94,7 @@ public class Main {
 
                 if(ErrorLoggerDetect.isError(message))
                     errorCounter.addError();
+
             }
         });
 
@@ -105,5 +108,29 @@ public class Main {
         errorCountMeasureThread.start();
 //        Thread.sleep(30000);
 //        mediaPlayerComponent.getMediaPlayer().playMedia("rtp://@239.0.0.1:5014");
+        frame.getBtnPlay().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if(frame.getBtnPlay().getText() == "Play"){
+                    frame.getBtnPlay().setText("Pause");
+
+                }
+                else if(frame.getBtnPlay().getText() == "Pause"){
+                    frame.getBtnPlay().setText("Play");
+
+                }
+            }
+        });
+
+
+        frame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                mediaPlayerComponent.release(true);
+                System.exit(0);
+            }
+        });
+
+//
     }
 }

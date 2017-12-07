@@ -1,8 +1,11 @@
 package br.ufjf.dcc082;
 
+import br.ufjf.dcc082.Client.ErrorCounter;
+import br.ufjf.dcc082.Client.ErrorLoggerDetect;
 import br.ufjf.dcc082.Client.Janela;
 import br.ufjf.dcc082.server.RtpServer;
-import com.sun.org.apache.bcel.internal.generic.NEW;
+import uk.co.caprica.vlcj.binding.LibVlcFactory;
+
 import uk.co.caprica.vlcj.binding.internal.libvlc_log_level_e;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.discovery.NativeDiscovery;
@@ -18,8 +21,9 @@ public class Main {
 
     private Janela frame;
     private EmbeddedMediaPlayerComponent mediaPlayerComponent;
+    private ErrorCounter errorCounter;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         new NativeDiscovery().discover();
 
         SwingUtilities.invokeLater(new Runnable() {
@@ -32,27 +36,65 @@ public class Main {
                 }
             }
         });
+
+        Thread.currentThread().join();
     }
+
+    /*public void setLoggerLevel(libvlc_log_level_e level)
+    {
+        if(this.log != null) {
+            this.log.setLevel(level);
+        }
+    }*/
 
     public Main() throws InterruptedException {
 
         frame = new Janela();
+        errorCounter = new ErrorCounter(3, 20, 2, 1);
 
         frame.setBounds(100, 100, 1280, 720);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
 
-        NativeLog log = mediaPlayerComponent.getMediaPlayerFactory().newLog();
-        if (log == null) {
+        final int STREAM_CHECK_INTERVAL = 30_000;
+
+        Thread errorCountMeasureThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (true) {
+                        Thread.currentThread().sleep(STREAM_CHECK_INTERVAL);
+                        int result = errorCounter.checkThreshold();
+
+                        if (result == 1)
+                            System.out.println("SOBE!!!");
+
+                        else if (result == -1)
+                            System.out.println("desce!!!!");
+                    }
+
+                } catch (InterruptedException e) {
+                    System.err.println("Já elvis...");
+                }
+            }
+        });
+
+        Logger.setLogger(mediaPlayerComponent.getMediaPlayerFactory().newLog());
+        if (Logger.getLogger() == null) {
+
             System.out.println("Native log not available on this platform");
             System.exit(1);
         }
 
-        log.setLevel(libvlc_log_level_e.DEBUG);
-        log.addLogListener(new LogEventListener() {
+        Logger.getLogger().setLevel(libvlc_log_level_e.DEBUG);
+        Logger.getLogger().addLogListener(new LogEventListener() {
             @Override
             public void log(libvlc_log_level_e level, String module, String file, Integer line, String name, String header, Integer id, String message) {
-                System.out.printf("[%-20s] (%-20s) %7s: %s\n", module, name, level, message);
+                Logger.log(level, module, file, line, name, header, id, message);
+
+                if(ErrorLoggerDetect.isError(message))
+                    errorCounter.addError();
+
             }
         });
 
@@ -61,7 +103,9 @@ public class Main {
         frame.setVisible(true);
 //        mediaPlayerComponent.getMediaPlayer().playMedia("rtp://@239.0.0.1:5024");
 //        Thread.sleep(30000);
-           mediaPlayerComponent.getMediaPlayer().playMedia("rtp://@239.0.0.1:5004");
+
+        mediaPlayerComponent.getMediaPlayer().playMedia("rtp://@239.0.0.1:5024");
+        errorCountMeasureThread.start();
 //        Thread.sleep(30000);
 //        mediaPlayerComponent.getMediaPlayer().playMedia("rtp://@239.0.0.1:5014");
         frame.getBtnPlay().addActionListener(new ActionListener() {

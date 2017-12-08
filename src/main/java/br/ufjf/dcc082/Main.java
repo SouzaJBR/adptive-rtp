@@ -103,7 +103,7 @@ public class Main {
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
 
-        final int STREAM_CHECK_INTERVAL = 30_000;
+        final int STREAM_CHECK_INTERVAL = 30000;
 
         Thread errorCountMeasureThread = new Thread(new Runnable() {
             @Override

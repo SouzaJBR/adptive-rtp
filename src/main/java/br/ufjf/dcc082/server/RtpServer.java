@@ -16,6 +16,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.*;
 import java.awt.*;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import java.io.IOException;
 import java.util.LinkedList;
 
@@ -138,14 +142,145 @@ public class RtpServer {
 
     public RtpServer() {
         frame = new JFrame("Adaptive RTP - Server");
-        frame.setBounds(100, 100, 600, 400);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setBounds(100, 100, 800, 550);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
-        frame.setContentPane(mediaPlayerComponent);
+        JLabel lblStream1 = new JLabel("Stream 1:");
+        JLabel lblStream2 = new JLabel("Stream 2:");
+        JLabel lblStream3 = new JLabel("Stream 3:");
+        JLabel lblQld = new JLabel("Qualidade: High");
+        JLabel lblQld2 = new JLabel("Qualidade: Medium");
+        JLabel lblQld3 = new JLabel("Qualidade: Low");
+        final JLabel lblURL = new JLabel("URL:");
+        JLabel lblPorta = new JLabel("Porta Base: ");
+        JLabel lblMulticast = new JLabel("Multicast address:");
+
+
+
+        JTextField txtStream1 = new JTextField(29);
+        JTextField txtStream2 = new JTextField(29);
+        JTextField txtStream3 = new JTextField(29);
+        JTextField txtMulticast = new JTextField(29);
+        JTextField txtPorta = new JTextField(29);
+        JButton btnPlay = new JButton("Play");
+        JPanel pnlCv = new JPanel(new GridBagLayout());
+
+        frame.add(pnlCv,BorderLayout.EAST);
+        GridBagLayout gbl = new GridBagLayout();
+        GridBagConstraints gbc = new GridBagConstraints();
+        pnlCv.setLayout(gbl);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.ipadx = 10;
+        gbc.ipady = 10;
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.NONE;
+
+
+        pnlCv.add(lblMulticast);
+        gbl.setConstraints(lblMulticast,gbc);
+        gbc.gridy = 1;
+
+        pnlCv.add(txtMulticast);
+        gbl.setConstraints(txtMulticast,gbc);
+        gbc.gridy = 2;
+        gbc.insets = new Insets(20,0,0,0);
+
+        pnlCv.add(lblPorta);
+        gbl.setConstraints(lblPorta,gbc);
+        gbc.gridy = 3;
+        gbc.insets = new Insets(0,0,0,0);
+
+
+        pnlCv.add(txtPorta);
+        gbl.setConstraints(txtPorta,gbc);
+        gbc.gridy = 4;
+        gbc.insets = new Insets(20,0,0,0);
+
+        pnlCv.add(lblStream1);
+        gbl.setConstraints(lblStream1,gbc);
+        gbc.gridy = 5;
+        gbc.insets = new Insets(0,0,0,0);
+
+        pnlCv.add(txtStream1);
+        gbl.setConstraints(txtStream1,gbc);
+        gbc.gridy = 6;
+
+
+        pnlCv.add(lblQld);
+        gbl.setConstraints(lblQld,gbc);
+        gbc.gridy = 7;
+        gbc.insets = new Insets(20,0,0,0);
+
+        pnlCv.add(lblStream2);
+        gbl.setConstraints(lblStream2,gbc);
+        gbc.gridy = 8;
+        gbc.insets = new Insets(0,0,0,0);
+
+        pnlCv.add(txtStream2);
+        gbl.setConstraints(txtStream2,gbc);
+        gbc.gridy = 9;
+
+
+        pnlCv.add(lblQld2);
+        gbl.setConstraints(lblQld2,gbc);
+        gbc.gridy = 10;
+        gbc.insets = new Insets(20,0,0,0);
+
+        pnlCv.add(lblStream3);
+        gbl.setConstraints(lblStream3,gbc);
+        gbc.gridy = 11;
+        gbc.insets = new Insets(0,0,0,0);
+
+        pnlCv.add(txtStream3);
+        gbl.setConstraints(txtStream3,gbc);
+        gbc.gridy = 12;
+
+
+        pnlCv.add(lblQld3);
+        gbl.setConstraints(lblQld3,gbc);
+        gbc.gridy = 13;
+        gbc.insets = new Insets(50,0,0,0);
+
+        pnlCv.add(btnPlay);
+        gbl.setConstraints(btnPlay,gbc);
+        gbc.gridy = 14;
+        gbc.insets = new Insets(10,0,0,0);
+
+        pnlCv.add(lblURL);
+        gbl.setConstraints(lblURL,gbc);
+
+
+
+
+
+
+
+        frame.add(mediaPlayerComponent,BorderLayout.CENTER);
+
         frame.setVisible(true);
         descriptors = createDescriptors(serverAddress, serverPort);
         startJetty();
         mediaPlayerComponent.getMediaPlayer().playMedia(mediaUrl, RtpServer.formatRtpStream(serverAddress, serverPort));
+
+        frame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                mediaPlayerComponent.release(true);
+                System.exit(0);
+            }
+        });
+
+        btnPlay.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                lblURL.setText("URL: http://192.168.150.200:8093/Stream.arm ");
+            }
+        });
+
 
     }
 }

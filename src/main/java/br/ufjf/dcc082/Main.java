@@ -4,6 +4,7 @@ import br.ufjf.dcc082.Client.ErrorCounter;
 import br.ufjf.dcc082.Client.ErrorLoggerDetect;
 import br.ufjf.dcc082.Client.Janela;
 import br.ufjf.dcc082.server.RtpServer;
+import com.sun.istack.internal.NotNull;
 import uk.co.caprica.vlcj.binding.LibVlcFactory;
 
 import uk.co.caprica.vlcj.binding.internal.libvlc_log_level_e;
@@ -16,12 +17,36 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.util.LinkedList;
 
 public class Main {
 
     private Janela frame;
     private EmbeddedMediaPlayerComponent mediaPlayerComponent;
     private ErrorCounter errorCounter;
+
+    LinkedList<RTPStreamDescriptor> descriptors = new LinkedList<>();
+
+    public static String downloadStringFromUrl(@NotNull URL targetUrl) throws IOException {
+        HttpURLConnection con = (HttpURLConnection) targetUrl.openConnection();
+        con.setRequestMethod("GET");
+
+        BufferedReader br = new BufferedReader(new InputStreamReader((con.getInputStream())));
+        StringBuilder response = new StringBuilder();
+        String output;
+        while ((output = br.readLine()) != null) {
+            response.append(output);
+        }
+
+        return  response.toString();
+    }
 
     public static void main(String[] args) throws InterruptedException {
         new NativeDiscovery().discover();
@@ -46,6 +71,28 @@ public class Main {
             this.log.setLevel(level);
         }
     }*/
+
+    public void loadManifest() {
+
+
+        try {
+            String url = this.frame.getTxtURL().getText();
+            String manifest = downloadStringFromUrl(new URL(url));
+
+            while(!manifest.isEmpty()) {
+                String[] data = manifest.split(";", 3);
+                manifest = data[2];
+                descriptors.add(new RTPStreamDescriptor(URLDecoder.decode(data[0]), URLDecoder.decode(data[1]).replace(";", " ")));
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
 
     public Main() throws InterruptedException {
 
@@ -134,6 +181,7 @@ public class Main {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                 mediaPlayerComponent.release(true);
+                Logger.getLogger().release();
                 System.exit(0);
             }
         });
@@ -141,8 +189,28 @@ public class Main {
         frame.getBtnIr().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                frame.getTxtURL().getText();
-               // ...
+                //frame.getTxtURL().getText();
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+//                        frame.getBtnIr().dis
+                        loadManifest();
+                        frame.getCb().removeAllItems();
+
+                        for(RTPStreamDescriptor descriptor: descriptors)
+                            frame.getCb().addItem(descriptor);
+                    }
+                });
+
+                t.start();
+
+            }
+        });
+
+        frame.getCb().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+
             }
         });
 

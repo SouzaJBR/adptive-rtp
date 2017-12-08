@@ -1,5 +1,8 @@
 package br.ufjf.dcc082;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 public class RTPStreamDescriptor {
 
     private String streamDescription;
@@ -7,7 +10,9 @@ public class RTPStreamDescriptor {
 
     @Override
     public String toString() {
-        return streamDescription + ";" + streamURL;
+
+            return URLEncoder.encode(streamDescription) + ";" + URLEncoder.encode(streamURL) + ";";
+
     }
 
     public RTPStreamDescriptor(String streamDescription, String streamURL) {

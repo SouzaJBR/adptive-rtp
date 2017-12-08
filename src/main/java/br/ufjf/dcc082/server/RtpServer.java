@@ -120,7 +120,7 @@ public class RtpServer {
                     if ("/stream.arm".equals(target))
                     {
                         for(RTPStreamDescriptor descriptor: descriptors)
-                            response.getWriter().println(descriptor);
+                            response.getWriter().print(descriptor + "\n");
 
                         baseRequest.setHandled(true);
                     }

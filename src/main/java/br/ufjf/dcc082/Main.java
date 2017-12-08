@@ -19,11 +19,13 @@ import java.awt.event.ActionListener;
 
 public class Main {
 
+
     private Janela frame;
     private EmbeddedMediaPlayerComponent mediaPlayerComponent;
     private ErrorCounter errorCounter;
 
     public static void main(String[] args) throws InterruptedException {
+
         new NativeDiscovery().discover();
 
         SwingUtilities.invokeLater(new Runnable() {
@@ -160,5 +162,6 @@ public class Main {
         });
 
 //rtp://@239.0.0.1:5024
+
     }
 }

@@ -69,7 +69,7 @@ public class RtpServer {
 
         //the 1/2 resolution stream
         sb.append("dst=\"transcode{vcodec=h264,scale=0.5,acodec=mpga,ab=128,channels=2,samplerate=44100}:rtp{dst=");
-        sb.append(serverAddress + 10);
+        sb.append(serverAddress);
         sb.append(",port=");
         sb.append(serverPort + 10);
         sb.append(",mux=ts}\"");

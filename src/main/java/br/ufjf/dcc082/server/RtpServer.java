@@ -39,9 +39,9 @@ public class RtpServer {
     private LinkedList<RTPStreamDescriptor> createDescriptors(String serverAddress, int serverPort) {
         LinkedList<RTPStreamDescriptor> descriptors = new LinkedList<>();
 
-        descriptors.add(new RTPStreamDescriptor("Original", "rtp://@"+ serverAddress + ":" + serverPort));
-        descriptors.add(new RTPStreamDescriptor("Medium", "rtp://@"+ serverAddress + ":" + (serverPort + 10)));
-        descriptors.add(new RTPStreamDescriptor("Low", "rtp://@"+ serverAddress + ":" + (serverPort + 20)));
+        descriptors.add(new RTPStreamDescriptor("Original", "rtp://@" + serverAddress + ":" + serverPort));
+        descriptors.add(new RTPStreamDescriptor("Medium", "rtp://@" + serverAddress + ":" + (serverPort + 10)));
+        descriptors.add(new RTPStreamDescriptor("Low", "rtp://@" + serverAddress + ":" + (serverPort + 20)));
 
         return descriptors;
     }
@@ -123,9 +123,8 @@ public class RtpServer {
                                    HttpServletResponse response)
                         throws IOException {
 
-                    if ("/stream.arm".equals(target))
-                    {
-                        for(RTPStreamDescriptor descriptor: descriptors)
+                    if ("/stream.arm".equals(target)) {
+                        for (RTPStreamDescriptor descriptor : descriptors)
                             response.getWriter().print(descriptor.toEscapedString() + "\n");
 
 
@@ -135,11 +134,11 @@ public class RtpServer {
                 }
             });
 
-                jettyServer.start();
+            jettyServer.start();
 
             //System.out.println("\nRecommendation worker started listening on " + port);
-    } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,"Erro no servidor de manifesto:\n" + e.getMessage(),"Erro Crítico",JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro no servidor de manifesto:\n" + e.getMessage(), "Erro Crítico", JOptionPane.ERROR_MESSAGE);
             mediaPlayerComponent.release(true);
             System.exit(0);
         }
@@ -162,21 +161,23 @@ public class RtpServer {
         JLabel lblMulticast = new JLabel("Multicast address:");
 
 
-
-        JTextField txtStream1 = new JTextField(29);
-        JTextField txtStream2 = new JTextField(29);
-        JTextField txtStream3 = new JTextField(29);
+        final JTextField txtStream1 = new JTextField(29);
+        final JTextField txtStream2 = new JTextField(29);
+        final JTextField txtStream3 = new JTextField(29);
         final JTextField txtMulticast = new JTextField(29);
-        JTextField txtURLVideo = new JTextField(29);
+        final JTextField txtURLVideo = new JTextField(29);
         final JTextField txtPorta = new JTextField(29);
         txtStream1.setEnabled(false);
         txtStream2.setEnabled(false);
         txtStream3.setEnabled(false);
 
+        txtURLVideo.setText(eiMrl);
+        txtMulticast.setText("239.0.0.1");
+        txtPorta.setText("5004");
         JButton btnPlay = new JButton("Play");
         JPanel pnlCv = new JPanel(new GridBagLayout());
 
-        frame.add(pnlCv,BorderLayout.EAST);
+        frame.add(pnlCv, BorderLayout.EAST);
         GridBagLayout gbl = new GridBagLayout();
         GridBagConstraints gbc = new GridBagConstraints();
         pnlCv.setLayout(gbl);
@@ -190,92 +191,90 @@ public class RtpServer {
         gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.NONE;
 
-
         pnlCv.add(lblMulticast);
-        gbl.setConstraints(lblMulticast,gbc);
+        gbl.setConstraints(lblMulticast, gbc);
         gbc.gridy = 1;
 
         pnlCv.add(txtMulticast);
-        gbl.setConstraints(txtMulticast,gbc);
+        gbl.setConstraints(txtMulticast, gbc);
         gbc.gridy = 2;
-        gbc.insets = new Insets(20,0,0,0);
+        gbc.insets = new Insets(20, 0, 0, 0);
 
         pnlCv.add(lblPorta);
-        gbl.setConstraints(lblPorta,gbc);
+        gbl.setConstraints(lblPorta, gbc);
         gbc.gridy = 3;
-        gbc.insets = new Insets(0,0,0,0);
+        gbc.insets = new Insets(0, 0, 0, 0);
 
 
         pnlCv.add(txtPorta);
-        gbl.setConstraints(txtPorta,gbc);
+        gbl.setConstraints(txtPorta, gbc);
         gbc.gridy = 4;
-        gbc.insets = new Insets(20,0,0,0);
+        gbc.insets = new Insets(20, 0, 0, 0);
 
         pnlCv.add(lblStream1);
-        gbl.setConstraints(lblStream1,gbc);
+        gbl.setConstraints(lblStream1, gbc);
         gbc.gridy = 5;
-        gbc.insets = new Insets(0,0,0,0);
+        gbc.insets = new Insets(0, 0, 0, 0);
 
         pnlCv.add(txtStream1);
-        gbl.setConstraints(txtStream1,gbc);
+        gbl.setConstraints(txtStream1, gbc);
         gbc.gridy = 6;
 
 
         pnlCv.add(lblQld);
-        gbl.setConstraints(lblQld,gbc);
+        gbl.setConstraints(lblQld, gbc);
         gbc.gridy = 7;
-        gbc.insets = new Insets(20,0,0,0);
+        gbc.insets = new Insets(20, 0, 0, 0);
 
         pnlCv.add(lblStream2);
-        gbl.setConstraints(lblStream2,gbc);
+        gbl.setConstraints(lblStream2, gbc);
         gbc.gridy = 8;
-        gbc.insets = new Insets(0,0,0,0);
+        gbc.insets = new Insets(0, 0, 0, 0);
 
         pnlCv.add(txtStream2);
-        gbl.setConstraints(txtStream2,gbc);
+        gbl.setConstraints(txtStream2, gbc);
         gbc.gridy = 9;
 
 
         pnlCv.add(lblQld2);
-        gbl.setConstraints(lblQld2,gbc);
+        gbl.setConstraints(lblQld2, gbc);
         gbc.gridy = 10;
-        gbc.insets = new Insets(20,0,0,0);
+        gbc.insets = new Insets(20, 0, 0, 0);
 
         pnlCv.add(lblStream3);
-        gbl.setConstraints(lblStream3,gbc);
+        gbl.setConstraints(lblStream3, gbc);
         gbc.gridy = 11;
-        gbc.insets = new Insets(0,0,0,0);
+        gbc.insets = new Insets(0, 0, 0, 0);
 
         pnlCv.add(txtStream3);
-        gbl.setConstraints(txtStream3,gbc);
+        gbl.setConstraints(txtStream3, gbc);
         gbc.gridy = 12;
 
 
         pnlCv.add(lblQld3);
-        gbl.setConstraints(lblQld3,gbc);
+        gbl.setConstraints(lblQld3, gbc);
         gbc.gridy = 13;
-        gbc.insets = new Insets(20,0,0,0);
+        gbc.insets = new Insets(20, 0, 0, 0);
 
         pnlCv.add(btnPlay);
-        gbl.setConstraints(btnPlay,gbc);
+        gbl.setConstraints(btnPlay, gbc);
         gbc.gridy = 14;
-        gbc.insets = new Insets(10,0,0,0);
+        gbc.insets = new Insets(10, 0, 0, 0);
 
         pnlCv.add(lblURL);
-        gbl.setConstraints(lblURL,gbc);
+        gbl.setConstraints(lblURL, gbc);
 
         JPanel pnlUrl = new JPanel();
-        pnlUrl.add(lblURLVideo,BorderLayout.WEST);
-        pnlUrl.add(txtURLVideo,BorderLayout.WEST);
+        pnlUrl.add(lblURLVideo, BorderLayout.WEST);
+        pnlUrl.add(txtURLVideo, BorderLayout.WEST);
 
-        frame.add(mediaPlayerComponent,BorderLayout.CENTER);
+        frame.add(mediaPlayerComponent, BorderLayout.CENTER);
 
-        frame.add(pnlUrl,BorderLayout.NORTH);
+        frame.add(pnlUrl, BorderLayout.NORTH);
 
         frame.setVisible(true);
-        descriptors = createDescriptors(serverAddress, serverPort);
+        //descriptors = createDescriptors(serverAddress, serverPort);
         startJetty();
-        mediaPlayerComponent.getMediaPlayer().playMedia(mediaUrl, RtpServer.formatRtpStream(serverAddress, serverPort));
 
         frame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -288,13 +287,26 @@ public class RtpServer {
         btnPlay.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                if(!txtMulticast.getText().equals("") && !txtPorta.getText().equals("")){
-                serverAddress = txtMulticast.getText();
-                serverPort = Integer.parseInt(txtPorta.getText());
-                lblURL.setText("URL: http://192.168.1.105:8093/Stream.arm");
-                }
-                else
-                    JOptionPane.showMessageDialog(null,"É necessário preencher o Multicast address e a Porta base");
+
+                if (!txtMulticast.getText().equals("") && !txtPorta.getText().equals("") && !txtURLVideo.getText().equals("")) {
+                    if(mediaPlayerComponent.getMediaPlayer().isPlaying())
+                        mediaPlayerComponent.getMediaPlayer().stop();
+
+                    serverAddress = txtMulticast.getText();
+                    serverPort = Integer.parseInt(txtPorta.getText());
+                    mediaUrl = txtURLVideo.getText();
+
+                    descriptors = createDescriptors(serverAddress, serverPort);
+
+                    txtStream1.setText(descriptors.get(0).getStreamURL());
+                    txtStream2.setText(descriptors.get(1).getStreamURL());
+                    txtStream3.setText(descriptors.get(2).getStreamURL());
+
+                    mediaPlayerComponent.getMediaPlayer().playMedia(mediaUrl, RtpServer.formatRtpStream(serverAddress, serverPort));
+
+                    lblURL.setText("URL: http://192.168.1.105:8093/Stream.arm");
+                } else
+                    JOptionPane.showMessageDialog(null, "É necessário preencher o Multicast address, a Porta base e o URL da mídia");
             }
         });
 

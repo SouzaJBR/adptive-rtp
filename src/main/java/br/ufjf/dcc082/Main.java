@@ -48,7 +48,7 @@ public class Main {
             response.append(output);
         }
 
-        return  response.toString();
+        return response.toString();
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -82,7 +82,7 @@ public class Main {
             String url = this.frame.getTxtURL().getText();
             String manifest = downloadStringFromUrl(new URL(url));
 
-            while(!manifest.isEmpty()) {
+            while (!manifest.isEmpty()) {
                 String[] data = manifest.split(";", 3);
 
                 manifest = (data.length == 3 ? data[2] : "");
@@ -98,7 +98,6 @@ public class Main {
         }
 
     }
-
 
 
     public Main() throws InterruptedException {
@@ -123,34 +122,28 @@ public class Main {
                         int result = errorCounter.checkThreshold();
 
                         if (result == 1) {
-                            RTPStreamDescriptor descriptor = (RTPStreamDescriptor)frame.getCb().getSelectedItem();
+                            RTPStreamDescriptor descriptor = (RTPStreamDescriptor) frame.getCb().getSelectedItem();
 
-                            if(descriptor.getBetterQualityStream() != null) {
+                            if (descriptor.getBetterQualityStream() != null) {
                                 System.out.println("SOBE!!! De " + descriptor.getStreamDescription() + " para " + descriptor.getBetterQualityStream().getStreamDescription());
                                 frame.getCb().setSelectedItem(descriptor.getBetterQualityStream());
-                            }
-
-                            else {
+                            } else {
                                 System.out.println("Máximo");
                             }
-                        }
+                        } else if (result == -1) {
+                            RTPStreamDescriptor descriptor = (RTPStreamDescriptor) frame.getCb().getSelectedItem();
 
-                        else if (result == -1) {
-                            RTPStreamDescriptor descriptor = (RTPStreamDescriptor)frame.getCb().getSelectedItem();
-
-                            if(descriptor.getWorseQualitySteam() != null) {
+                            if (descriptor.getWorseQualitySteam() != null) {
                                 System.out.println("DESCE!!! De " + descriptor.getStreamDescription() + " para " + descriptor.getWorseQualitySteam().getStreamDescription());
                                 frame.getCb().setSelectedItem(descriptor.getWorseQualitySteam());
-                            }
-
-                            else {
+                            } else {
                                 System.out.println("Mínimo e ainda ta ruim?!??");
                             }
                         }
                     }
 
                 } catch (InterruptedException e) {
-                    JOptionPane.showMessageDialog(null,"Falhou o motor de adaptação","Erro Crítico",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Falhou o motor de adaptação", "Erro Crítico", JOptionPane.ERROR_MESSAGE);
                     mediaPlayerComponent.release(true);
                     System.exit(0);
                 }
@@ -170,7 +163,7 @@ public class Main {
             public void log(libvlc_log_level_e level, String module, String file, Integer line, String name, String header, Integer id, String message) {
                 Logger.log(level, module, file, line, name, header, id, message);
 
-                if(ErrorLoggerDetect.isError(message))
+                if (ErrorLoggerDetect.isError(message))
                     errorCounter.addError();
 
             }
@@ -190,16 +183,14 @@ public class Main {
         frame.getBtnPlay().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                if(frame.getBtnPlay().getText() == "Play"){
+                if (frame.getBtnPlay().getText() == "Play") {
                     frame.getBtnPlay().setText("Pause");
-                    if(mediaPlayerComponent.getMediaPlayer().isPlaying()){
+                    if (mediaPlayerComponent.getMediaPlayer().isPlaying()) {
                         mediaPlayerComponent.getMediaPlayer().play();
-                    }
-                    else
+                    } else
                         mediaPlayerComponent.getMediaPlayer().start();
 
-                }
-                else if(frame.getBtnPlay().getText() == "Pause"){
+                } else if (frame.getBtnPlay().getText() == "Pause") {
                     frame.getBtnPlay().setText("Play");
                     mediaPlayerComponent.getMediaPlayer().pause();
                 }
@@ -212,7 +203,7 @@ public class Main {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                 mediaPlayerComponent.release(true);
-                Logger.getLogger().release();
+                //Logger.getLogger().release();
                 System.exit(0);
             }
         });
@@ -220,25 +211,28 @@ public class Main {
         frame.getBtnIr().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-<<<<<<< HEAD
-		if(!frame.getTxtURL().getText().equals("")) {
-                //frame.getTxtURL().getText();
-		        Thread t = new Thread(new Runnable() {
-		            @Override
-		            public void run() {
-	//                        frame.getBtnIr().dis
-		                loadManifest();
-		                frame.getCb().removeAllItems();
 
-		                for(RTPStreamDescriptor descriptor: descriptors)
-		                    frame.getCb().addItem(descriptor);
-		            }
-		        });
+                if (!frame.getTxtURL().getText().equals("")) {
+                    //frame.getTxtURL().getText();
+                    Thread t = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //                        frame.getBtnIr().dis
+                            loadManifest();
+                            frame.getCb().removeAllItems();
 
-		        t.start();
-		}
-		else
-                    JOptionPane.showMessageDialog(null,"É necessário digitar uma url");
+                            for (RTPStreamDescriptor descriptor : descriptors)
+                                frame.getCb().addItem(descriptor);
+
+                            mediaPlayerComponent.getMediaPlayer().playMedia(((RTPStreamDescriptor) frame.getCb().getSelectedItem()).getStreamURL());
+
+                            frame.getBtnPlay().setText("Pause");
+                        }
+                    });
+
+                    t.start();
+                } else
+                    JOptionPane.showMessageDialog(null, "É necessário digitar uma url");
 
             }
         });
@@ -253,7 +247,7 @@ public class Main {
         frame.getCb().addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent itemEvent) {
-                if(frame.getCb().getItemCount() == 3)
+                if (frame.getCb().getItemCount() == 3)
                     mediaPlayerComponent.getMediaPlayer().playMedia(((RTPStreamDescriptor) itemEvent.getItem()).getStreamURL());
 
             }

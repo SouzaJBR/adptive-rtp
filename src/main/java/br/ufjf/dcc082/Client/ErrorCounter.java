@@ -55,11 +55,4 @@ public class ErrorCounter {
         }
     }
 
-    public int getAndResetErrorCount() {
-        synchronized (key) {
-            int oldErrorCount = errorCount;
-            errorCount = 0;
-            return oldErrorCount;
-        }
-    }
 }

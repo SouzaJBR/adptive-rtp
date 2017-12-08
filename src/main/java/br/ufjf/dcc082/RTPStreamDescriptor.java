@@ -5,11 +5,40 @@ import java.net.URLEncoder;
 
 public class RTPStreamDescriptor {
 
+    private RTPStreamDescriptor worseQualitySteam;
+
+    public RTPStreamDescriptor getWorseQualitySteam() {
+        return worseQualitySteam;
+    }
+
+    public static void chainStreams(RTPStreamDescriptor worseQualitySteam, RTPStreamDescriptor betterQualityStream) {
+        worseQualitySteam.setBetterQualityStream(betterQualityStream);
+        betterQualityStream.setWorseQualitySteam(worseQualitySteam);
+    }
+
+    public void setWorseQualitySteam(RTPStreamDescriptor worseQualitySteam) {
+        ///worseQualitySteam.setBetterQualityStream(this);
+        this.worseQualitySteam = worseQualitySteam;
+    }
+
+    public RTPStreamDescriptor getBetterQualityStream() {
+        return betterQualityStream;
+    }
+
+    public void setBetterQualityStream(RTPStreamDescriptor betterQualityStream) {
+        //betterQualityStream.setWorseQualitySteam(this);
+        this.betterQualityStream = betterQualityStream;
+    }
+
     private String streamDescription;
     private String streamURL;
+    private RTPStreamDescriptor betterQualityStream;
 
     @Override
     public String toString() {
+        return streamDescription;
+    }
+    public String toEscapedString() {
 
             return URLEncoder.encode(streamDescription) + ";" + URLEncoder.encode(streamURL) + ";";
 

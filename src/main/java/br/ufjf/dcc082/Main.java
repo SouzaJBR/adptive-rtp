@@ -17,6 +17,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -74,16 +76,19 @@ public class Main {
 
     public void loadManifest() {
 
-
         try {
             String url = this.frame.getTxtURL().getText();
             String manifest = downloadStringFromUrl(new URL(url));
 
             while(!manifest.isEmpty()) {
                 String[] data = manifest.split(";", 3);
-                manifest = data[2];
+
+                manifest = (data.length == 3 ? data[2] : "");
                 descriptors.add(new RTPStreamDescriptor(URLDecoder.decode(data[0]), URLDecoder.decode(data[1]).replace(";", " ")));
             }
+
+            RTPStreamDescriptor.chainStreams(descriptors.get(2), descriptors.get(1));
+            RTPStreamDescriptor.chainStreams(descriptors.get(1), descriptors.get(0));
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -103,6 +108,8 @@ public class Main {
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
 
+        this.frame.getTxtURL().setText("http://192.168.1.105:8093/stream.arm");
+
         final int STREAM_CHECK_INTERVAL = 30000;
 
         Thread errorCountMeasureThread = new Thread(new Runnable() {
@@ -113,11 +120,31 @@ public class Main {
                         Thread.currentThread().sleep(STREAM_CHECK_INTERVAL);
                         int result = errorCounter.checkThreshold();
 
-                        if (result == 1)
-                            System.out.println("SOBE!!!");
+                        if (result == 1) {
+                            RTPStreamDescriptor descriptor = (RTPStreamDescriptor)frame.getCb().getSelectedItem();
 
-                        else if (result == -1)
-                            System.out.println("desce!!!!");
+                            if(descriptor.getBetterQualityStream() != null) {
+                                System.out.println("SOBE!!! De " + descriptor.getStreamDescription() + " para " + descriptor.getBetterQualityStream().getStreamDescription());
+                                frame.getCb().setSelectedItem(descriptor.getBetterQualityStream());
+                            }
+
+                            else {
+                                System.out.println("Máximo");
+                            }
+                        }
+
+                        else if (result == -1) {
+                            RTPStreamDescriptor descriptor = (RTPStreamDescriptor)frame.getCb().getSelectedItem();
+
+                            if(descriptor.getWorseQualitySteam() != null) {
+                                System.out.println("DESCE!!! De " + descriptor.getStreamDescription() + " para " + descriptor.getWorseQualitySteam().getStreamDescription());
+                                frame.getCb().setSelectedItem(descriptor.getWorseQualitySteam());
+                            }
+
+                            else {
+                                System.out.println("Mínimo e ainda ta ruim?!??");
+                            }
+                        }
                     }
 
                 } catch (InterruptedException e) {
@@ -151,7 +178,7 @@ public class Main {
 //        mediaPlayerComponent.getMediaPlayer().playMedia("rtp://@239.0.0.1:5024");
 //        Thread.sleep(30000);
 
-        mediaPlayerComponent.getMediaPlayer().playMedia("rtp://@239.0.0.1:5024");
+        //mediaPlayerComponent.getMediaPlayer().playMedia("rtp://@239.0.0.1:5024");
         errorCountMeasureThread.start();
 //        Thread.sleep(30000);
 //        mediaPlayerComponent.getMediaPlayer().playMedia("rtp://@239.0.0.1:5014");
@@ -170,7 +197,6 @@ public class Main {
                 else if(frame.getBtnPlay().getText() == "Pause"){
                     frame.getBtnPlay().setText("Play");
                     mediaPlayerComponent.getMediaPlayer().pause();
-
                 }
 
             }
@@ -211,6 +237,14 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
 
+            }
+        });
+
+        frame.getCb().addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent itemEvent) {
+                if(frame.getCb().getItemCount() == 3)
+                    mediaPlayerComponent.getMediaPlayer().playMedia(((RTPStreamDescriptor) itemEvent.getItem()).getStreamURL());
             }
         });
 

@@ -62,14 +62,14 @@ public class RtpServer {
         sb.append("dst=\"rtp{dst=");
         sb.append(serverAddress);
         sb.append(",port=");
-        sb.append(serverPort+20);
+        sb.append(serverPort);
         sb.append(",mux=ts}\"");
 
         sb.append(",");
 
         //the 1/2 resolution stream
         sb.append("dst=\"transcode{vcodec=h264,scale=0.5,acodec=mpga,ab=128,channels=2,samplerate=44100}:rtp{dst=");
-        sb.append(serverAddress);
+        sb.append(serverAddress + 10);
         sb.append(",port=");
         sb.append(serverPort);
         sb.append(",mux=ts}\"");
@@ -80,7 +80,7 @@ public class RtpServer {
         sb.append("dst=\"transcode{vcodec=h264,scale=0.25,acodec=mpga,ab=128,channels=2,samplerate=44100}:rtp{dst=");
         sb.append(serverAddress);
         sb.append(",port=");
-        sb.append(serverPort+10);
+        sb.append(serverPort + 20);
         sb.append(",mux=ts}\"");
 
         sb.append("}");
@@ -124,7 +124,7 @@ public class RtpServer {
                     if ("/stream.arm".equals(target))
                     {
                         for(RTPStreamDescriptor descriptor: descriptors)
-                            response.getWriter().print(descriptor + "\n");
+                            response.getWriter().print(descriptor.toEscapedString() + "\n");
 
                         baseRequest.setHandled(true);
                     }
@@ -252,13 +252,7 @@ public class RtpServer {
 
         pnlCv.add(lblURL);
         gbl.setConstraints(lblURL,gbc);
-
-
-
-
-
-
-
+        
         frame.add(mediaPlayerComponent,BorderLayout.CENTER);
 
         frame.setVisible(true);

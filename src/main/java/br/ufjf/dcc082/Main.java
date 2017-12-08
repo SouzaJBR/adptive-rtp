@@ -30,6 +30,7 @@ import java.util.LinkedList;
 
 public class Main {
 
+
     private Janela frame;
     private EmbeddedMediaPlayerComponent mediaPlayerComponent;
     private ErrorCounter errorCounter;
@@ -51,6 +52,7 @@ public class Main {
     }
 
     public static void main(String[] args) throws InterruptedException {
+
         new NativeDiscovery().discover();
 
         SwingUtilities.invokeLater(new Runnable() {
@@ -148,7 +150,9 @@ public class Main {
                     }
 
                 } catch (InterruptedException e) {
-                    System.err.println("Já elvis...");
+                    JOptionPane.showMessageDialog(null,"Falhou o motor de adaptação","Erro Crítico",JOptionPane.ERROR_MESSAGE);
+                    mediaPlayerComponent.release(true);
+                    System.exit(0);
                 }
             }
         });
@@ -179,6 +183,7 @@ public class Main {
 //        Thread.sleep(30000);
 
         //mediaPlayerComponent.getMediaPlayer().playMedia("rtp://@239.0.0.1:5024");
+
         errorCountMeasureThread.start();
 //        Thread.sleep(30000);
 //        mediaPlayerComponent.getMediaPlayer().playMedia("rtp://@239.0.0.1:5014");
@@ -215,20 +220,25 @@ public class Main {
         frame.getBtnIr().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+<<<<<<< HEAD
+		if(!frame.getTxtURL().getText().equals("")) {
                 //frame.getTxtURL().getText();
-                Thread t = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-//                        frame.getBtnIr().dis
-                        loadManifest();
-                        frame.getCb().removeAllItems();
+		        Thread t = new Thread(new Runnable() {
+		            @Override
+		            public void run() {
+	//                        frame.getBtnIr().dis
+		                loadManifest();
+		                frame.getCb().removeAllItems();
 
-                        for(RTPStreamDescriptor descriptor: descriptors)
-                            frame.getCb().addItem(descriptor);
-                    }
-                });
+		                for(RTPStreamDescriptor descriptor: descriptors)
+		                    frame.getCb().addItem(descriptor);
+		            }
+		        });
 
-                t.start();
+		        t.start();
+		}
+		else
+                    JOptionPane.showMessageDialog(null,"É necessário digitar uma url");
 
             }
         });
@@ -245,6 +255,7 @@ public class Main {
             public void itemStateChanged(ItemEvent itemEvent) {
                 if(frame.getCb().getItemCount() == 3)
                     mediaPlayerComponent.getMediaPlayer().playMedia(((RTPStreamDescriptor) itemEvent.getItem()).getStreamURL());
+
             }
         });
 
@@ -256,6 +267,7 @@ public class Main {
             }
         });
 
-//
+//rtp://@239.0.0.1:5024
+
     }
 }

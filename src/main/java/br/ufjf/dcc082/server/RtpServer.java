@@ -71,7 +71,7 @@ public class RtpServer {
         sb.append("dst=\"transcode{vcodec=h264,scale=0.5,acodec=mpga,ab=128,channels=2,samplerate=44100}:rtp{dst=");
         sb.append(serverAddress + 10);
         sb.append(",port=");
-        sb.append(serverPort);
+        sb.append(serverPort + 10);
         sb.append(",mux=ts}\"");
 
         sb.append(",");
@@ -80,7 +80,9 @@ public class RtpServer {
         sb.append("dst=\"transcode{vcodec=h264,scale=0.25,acodec=mpga,ab=128,channels=2,samplerate=44100}:rtp{dst=");
         sb.append(serverAddress);
         sb.append(",port=");
+
         sb.append(serverPort + 20);
+
         sb.append(",mux=ts}\"");
 
         sb.append("}");
@@ -126,6 +128,7 @@ public class RtpServer {
                         for(RTPStreamDescriptor descriptor: descriptors)
                             response.getWriter().print(descriptor.toEscapedString() + "\n");
 
+
                         baseRequest.setHandled(true);
                     }
 
@@ -136,7 +139,9 @@ public class RtpServer {
 
             //System.out.println("\nRecommendation worker started listening on " + port);
     } catch (Exception e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,"Erro no servidor de manifesto:\n" + e.getMessage(),"Erro Crítico",JOptionPane.ERROR_MESSAGE);
+            mediaPlayerComponent.release(true);
+            System.exit(0);
         }
     }
 
@@ -152,6 +157,7 @@ public class RtpServer {
         JLabel lblQld2 = new JLabel("Qualidade: Medium");
         JLabel lblQld3 = new JLabel("Qualidade: Low");
         final JLabel lblURL = new JLabel("URL:");
+        JLabel lblURLVideo = new JLabel("URL do Vídeo:");
         JLabel lblPorta = new JLabel("Porta Base: ");
         JLabel lblMulticast = new JLabel("Multicast address:");
 
@@ -160,8 +166,13 @@ public class RtpServer {
         JTextField txtStream1 = new JTextField(29);
         JTextField txtStream2 = new JTextField(29);
         JTextField txtStream3 = new JTextField(29);
-        JTextField txtMulticast = new JTextField(29);
-        JTextField txtPorta = new JTextField(29);
+        final JTextField txtMulticast = new JTextField(29);
+        JTextField txtURLVideo = new JTextField(29);
+        final JTextField txtPorta = new JTextField(29);
+        txtStream1.setEnabled(false);
+        txtStream2.setEnabled(false);
+        txtStream3.setEnabled(false);
+
         JButton btnPlay = new JButton("Play");
         JPanel pnlCv = new JPanel(new GridBagLayout());
 
@@ -243,7 +254,7 @@ public class RtpServer {
         pnlCv.add(lblQld3);
         gbl.setConstraints(lblQld3,gbc);
         gbc.gridy = 13;
-        gbc.insets = new Insets(50,0,0,0);
+        gbc.insets = new Insets(20,0,0,0);
 
         pnlCv.add(btnPlay);
         gbl.setConstraints(btnPlay,gbc);
@@ -252,8 +263,14 @@ public class RtpServer {
 
         pnlCv.add(lblURL);
         gbl.setConstraints(lblURL,gbc);
-        
+
+        JPanel pnlUrl = new JPanel();
+        pnlUrl.add(lblURLVideo,BorderLayout.WEST);
+        pnlUrl.add(txtURLVideo,BorderLayout.WEST);
+
         frame.add(mediaPlayerComponent,BorderLayout.CENTER);
+
+        frame.add(pnlUrl,BorderLayout.NORTH);
 
         frame.setVisible(true);
         descriptors = createDescriptors(serverAddress, serverPort);
@@ -271,7 +288,13 @@ public class RtpServer {
         btnPlay.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                lblURL.setText("URL: http://192.168.150.200:8093/Stream.arm ");
+                if(!txtMulticast.getText().equals("") && !txtPorta.getText().equals("")){
+                serverAddress = txtMulticast.getText();
+                serverPort = Integer.parseInt(txtPorta.getText());
+                lblURL.setText("URL: http://192.168.1.105:8093/Stream.arm");
+                }
+                else
+                    JOptionPane.showMessageDialog(null,"É necessário preencher o Multicast address e a Porta base");
             }
         });
 

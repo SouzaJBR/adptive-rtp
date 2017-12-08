@@ -74,7 +74,9 @@ public class Main {
                     }
 
                 } catch (InterruptedException e) {
-                    System.err.println("Já elvis...");
+                    JOptionPane.showMessageDialog(null,"Falhou o motor de adaptação","Erro Crítico",JOptionPane.ERROR_MESSAGE);
+                    mediaPlayerComponent.release(true);
+                    System.exit(0);
                 }
             }
         });
@@ -104,7 +106,7 @@ public class Main {
 //        mediaPlayerComponent.getMediaPlayer().playMedia("rtp://@239.0.0.1:5024");
 //        Thread.sleep(30000);
 
-        mediaPlayerComponent.getMediaPlayer().playMedia("rtp://@239.0.0.1:5024");
+
         errorCountMeasureThread.start();
 //        Thread.sleep(30000);
 //        mediaPlayerComponent.getMediaPlayer().playMedia("rtp://@239.0.0.1:5014");
@@ -141,8 +143,11 @@ public class Main {
         frame.getBtnIr().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                frame.getTxtURL().getText();
-               // ...
+                if(!frame.getTxtURL().getText().equals(""))
+                    mediaPlayerComponent.getMediaPlayer().playMedia(frame.getTxtURL().getText());
+                else
+                    JOptionPane.showMessageDialog(null,"É necessário digitar uma url");
+
             }
         });
 
@@ -154,6 +159,6 @@ public class Main {
             }
         });
 
-//
+//rtp://@239.0.0.1:5024
     }
 }

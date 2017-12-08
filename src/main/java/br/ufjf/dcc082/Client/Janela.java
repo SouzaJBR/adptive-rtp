@@ -19,7 +19,7 @@ public class Janela extends JFrame {
     private final JButton btnPlay = new JButton("Play");
     private final JButton btnIr = new JButton("Ir");
 
-    //private final JButton btnPause = new JButton("Pause");
+    private final JButton btnParar = new JButton("Parar");
     private final JComboBox cb = new JComboBox();
 
     public JTextField getTxtURL() {
@@ -34,9 +34,9 @@ public class Janela extends JFrame {
         return btnIr;
     }
 
- //   public JButton getBtnPause() {
-   //     return btnPause;
- //   }
+    public JButton getBtnParar() {
+      return btnParar;
+    }
 
     public JComboBox getCb() {
         return cb;
@@ -58,14 +58,14 @@ public class Janela extends JFrame {
 
 
         pnlcb.add(btnPlay,BorderLayout.WEST);
-       // pnlcb.add(btnPause,BorderLayout.CENTER);
+        pnlcb.add(btnParar,BorderLayout.CENTER);
         pnlcb.add(cb,BorderLayout.EAST);
 
         JPanel pnlEntrada = new JPanel(new FlowLayout());
         pnlEntrada.add(pnlNome);
         pnlEntrada.add(pnlcb);
         btnPlay.setPreferredSize(new Dimension(400, 30));
-      //  btnPause.setPreferredSize(new Dimension(400, 30));
+
         add(pnlNome,BorderLayout.NORTH);
         add(pnlEntrada,BorderLayout.SOUTH);
 
@@ -74,7 +74,7 @@ public class Janela extends JFrame {
 //        mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
 //        add(mediaPlayerComponent, BorderLayout.CENTER);
 
-     //   mediaPlayerComponent.getMediaPlayer().playMedia("rtp://@239.0.0.1:5024");
+     //   mediaPlayerqComponent.getMediaPlayer().playMedia("rtp://@239.0.0.1:5024");
 //        Thread.sleep(30000);
 //        mediaPlayerComponent.getMediaPlayer().playMedia("rtp://@239.0.0.1:5004");
 //        Thread.sleep(30000);
